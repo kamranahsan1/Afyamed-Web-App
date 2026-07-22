@@ -38,6 +38,19 @@ return [
             'report' => false,
         ],
 
+        /*
+        | Hostinger private medical files (never publicly linked).
+        | Categories live under storage/app/private/{category}/
+        */
+        'medical' => [
+            'driver' => 'local',
+            'root' => storage_path('app/private'),
+            'visibility' => 'private',
+            'serve' => false,
+            'throw' => false,
+            'report' => false,
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
