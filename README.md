@@ -29,8 +29,8 @@ Use disk `medical` in Laravel. Metadata is stored in MySQL `files`.
 
 1. Copy `.env.example` → `.env` and set MySQL + `APP_KEY`
 2. Set `ADMIN_EMAIL` and `ADMIN_PASSWORD` (minimum 12 characters in production)
-3. Place Firebase service account at `storage/app/firebase/service-account.json`
-4. Set `FIREBASE_PROJECT_ID`
+3. Complete Firebase (see `../docs/FIREBASE_SETUP.md`) and place service account at `storage/app/firebase/service-account.json`
+4. Set `FIREBASE_PROJECT_ID` and `FIREBASE_AUTH_BYPASS=false`
 5. Run:
 
 ```bash
