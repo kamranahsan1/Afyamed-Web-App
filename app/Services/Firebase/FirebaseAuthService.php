@@ -13,21 +13,20 @@ final class FirebaseAuthService
 
     public function credentialsPath(): ?string
     {
-        $candidates = array_filter([
+        $candidates = [
             config('firebase.credentials'),
-            storage_path('app/firebase/service-account.json'),
-        ], fn ($path): bool => is_string($path) && $path !== '');
+            storage_path('app'.DIRECTORY_SEPARATOR.'firebase'.DIRECTORY_SEPARATOR.'service-account.json'),
+            base_path('storage'.DIRECTORY_SEPARATOR.'app'.DIRECTORY_SEPARATOR.'firebase'.DIRECTORY_SEPARATOR.'service-account.json'),
+        ];
 
         foreach ($candidates as $path) {
-            if (! str_starts_with($path, DIRECTORY_SEPARATOR)
-                && ! preg_match('/^[A-Za-z]:[\\\\\\/]/', $path)) {
-                $path = base_path($path);
+            if (! is_string($path) || $path === '') {
+                continue;
             }
 
-            $path = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
-
-            if (is_file($path)) {
-                return $path;
+            $normalized = $this->normalizePath($path);
+            if (is_file($normalized) && is_readable($normalized)) {
+                return $normalized;
             }
         }
 
@@ -36,7 +35,34 @@ final class FirebaseAuthService
 
     public function configured(): bool
     {
-        return $this->credentialsPath() !== null;
+        $path = $this->credentialsPath();
+        if ($path === null) {
+            return false;
+        }
+
+        $json = json_decode((string) file_get_contents($path), true);
+
+        return is_array($json)
+            && ! empty($json['project_id'])
+            && ! empty($json['client_email'])
+            && ! empty($json['private_key']);
+    }
+
+    public function projectId(): ?string
+    {
+        $fromEnv = config('firebase.project_id');
+        if (is_string($fromEnv) && $fromEnv !== '') {
+            return $fromEnv;
+        }
+
+        $path = $this->credentialsPath();
+        if ($path === null) {
+            return null;
+        }
+
+        $json = json_decode((string) file_get_contents($path), true);
+
+        return is_array($json) ? ($json['project_id'] ?? null) : null;
     }
 
     public function auth(): FirebaseAuth
@@ -51,7 +77,7 @@ final class FirebaseAuthService
 
         $factory = (new Factory)->withServiceAccount($this->credentialsPath());
 
-        if ($projectId = config('firebase.project_id')) {
+        if ($projectId = $this->projectId()) {
             $factory = $factory->withProjectId($projectId);
         }
 
@@ -92,5 +118,15 @@ final class FirebaseAuthService
             'phone' => $claims->get('phone_number'),
             'claims' => $claims->all(),
         ];
+    }
+
+    private function normalizePath(string $path): string
+    {
+        if (! str_starts_with($path, DIRECTORY_SEPARATOR)
+            && ! preg_match('/^[A-Za-z]:[\\\\\\/]/', $path)) {
+            $path = base_path($path);
+        }
+
+        return str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
     }
 }
