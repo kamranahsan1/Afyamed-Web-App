@@ -12,12 +12,24 @@ class CarePlan extends Model
         'ulid',
         'title',
         'slug',
+        'category',
         'summary',
+        'tagline',
         'body',
+        'benefits',
+        'member_events',
         'status',
         'sort_order',
         'created_by',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'benefits' => 'array',
+            'member_events' => 'array',
+        ];
+    }
 
     protected static function booted(): void
     {
@@ -27,6 +39,9 @@ class CarePlan extends Model
             }
             if (empty($plan->slug) && ! empty($plan->title)) {
                 $plan->slug = Str::slug($plan->title).'-'.Str::lower(Str::random(4));
+            }
+            if (empty($plan->category)) {
+                $plan->category = 'clinical';
             }
         });
     }

@@ -12,116 +12,143 @@ class CarePlanSeeder extends Seeder
     {
         $adminId = WebAdmin::query()->value('id');
 
-        $plans = [
+        CarePlan::query()->updateOrCreate(
+            ['slug' => 'personalized-everyday-care'],
+            [
+                'title' => 'Personalized Everyday Care',
+                'category' => 'membership',
+                'tagline' => 'Your everyday health companion. Designed to help you stay healthy—not just treat illness.',
+                'summary' => 'Membership care plan with complimentary onboarding, monthly prescription/wellness delivery, family tools, and discounted telehealth.',
+                'body' => <<<'HTML'
+<p><strong>Personalized Everyday Care</strong> is your everyday health companion—designed to help you stay healthy, not just treat illness.</p>
+<p>Members get a personalized plan, family dashboard, smart reminders, priority telehealth, and monthly care benefits including discounted consultations.</p>
+HTML,
+                'benefits' => [
+                    [
+                        'title' => 'Complimentary Initial Health Consultation',
+                        'description' => 'Start with a licensed healthcare provider who will help create your personalized care plan.',
+                    ],
+                    [
+                        'title' => 'Insurance Support',
+                        'description' => 'Store your insurance details and get help navigating your healthcare benefits.',
+                    ],
+                    [
+                        'title' => 'Automatic Monthly Prescription & Wellness Bundle',
+                        'description' => 'Your eligible prescription refills and selected wellness essentials are automatically prepared each month and delivered together in one complimentary monthly order.',
+                    ],
+                    [
+                        'title' => 'Personalized Care Plan',
+                        'description' => 'Receive a plan tailored to your health goals, lifestyle, and medical needs.',
+                    ],
+                    [
+                        'title' => 'Family Health Dashboard',
+                        'description' => 'Manage medications, appointments, and health information for yourself and your loved ones in one place.',
+                    ],
+                    [
+                        'title' => 'Smart Health Reminders',
+                        'description' => 'Never miss a medication, refill, doctor appointment, lab test, or follow-up again.',
+                    ],
+                    [
+                        'title' => 'Priority Access to Telehealth',
+                        'description' => 'Book appointments faster and receive exclusive member pricing on eligible consultations.',
+                    ],
+                    [
+                        'title' => 'Discounted Monthly Consultations',
+                        'description' => 'Members receive one telehealth consultation each month at a discounted price, making ongoing care more convenient and affordable.',
+                    ],
+                ],
+                'member_events' => [
+                    [
+                        'code' => 'complimentary_initial_consult',
+                        'title' => 'Complimentary initial health consultation',
+                        'description' => 'One-time free consultation with a licensed provider to build the personalized care plan.',
+                        'type' => 'complimentary',
+                        'frequency' => 'once',
+                        'quantity' => 1,
+                        'discount_percent' => null,
+                        'active' => true,
+                    ],
+                    [
+                        'code' => 'monthly_complimentary_consult',
+                        'title' => '1 complimentary consultation per month',
+                        'description' => 'Members get one complimentary / deeply discounted telehealth consultation each calendar month.',
+                        'type' => 'complimentary',
+                        'frequency' => 'monthly',
+                        'quantity' => 1,
+                        'discount_percent' => 100,
+                        'active' => true,
+                    ],
+                    [
+                        'code' => 'doctor_consultation_discount',
+                        'title' => 'Discount on doctor consultation',
+                        'description' => 'Exclusive member pricing on eligible doctor consultations beyond the monthly complimentary consult.',
+                        'type' => 'discount',
+                        'frequency' => 'ongoing',
+                        'quantity' => null,
+                        'discount_percent' => 20,
+                        'active' => true,
+                    ],
+                    [
+                        'code' => 'monthly_rx_wellness_bundle',
+                        'title' => 'Monthly prescription & wellness bundle',
+                        'description' => 'Eligible refills and wellness essentials prepared and delivered together once per month at no delivery charge.',
+                        'type' => 'bundle',
+                        'frequency' => 'monthly',
+                        'quantity' => 1,
+                        'discount_percent' => null,
+                        'active' => true,
+                    ],
+                    [
+                        'code' => 'priority_telehealth',
+                        'title' => 'Priority telehealth booking',
+                        'description' => 'Faster appointment booking and priority access to eligible telehealth slots.',
+                        'type' => 'priority',
+                        'frequency' => 'ongoing',
+                        'quantity' => null,
+                        'discount_percent' => null,
+                        'active' => true,
+                    ],
+                ],
+                'status' => 'published',
+                'sort_order' => 0,
+                'created_by' => $adminId,
+            ],
+        );
+
+        $clinical = [
             [
                 'title' => 'Diabetes Care Plan',
                 'slug' => 'diabetes-care-plan',
                 'summary' => 'Day-to-day guidance for managing type 2 diabetes with diet, activity, and medication reminders.',
-                'body' => <<<'HTML'
-<p>This care plan helps patients keep blood sugar steady and reduce long-term complications.</p>
-<ul>
-<li>Check fasting glucose as advised by your doctor</li>
-<li>Prefer whole grains, vegetables, lean protein, and controlled portions</li>
-<li>Walk at least 30 minutes most days of the week</li>
-<li>Take medicines on schedule and never skip doses without medical advice</li>
-<li>Book a follow-up if readings stay high for 3 consecutive days</li>
-</ul>
-HTML,
-                'status' => 'published',
-                'sort_order' => 1,
+                'body' => '<p>Keep blood sugar steady with monitoring, balanced meals, daily movement, and on-time medicines.</p>',
+                'sort_order' => 10,
             ],
             [
                 'title' => 'Hypertension Management',
                 'slug' => 'hypertension-management',
-                'summary' => 'A practical plan for controlling high blood pressure at home and knowing when to seek care.',
-                'body' => <<<'HTML'
-<p>Focus on salt reduction, regular monitoring, and consistent medication use.</p>
-<ul>
-<li>Measure blood pressure at the same time each day</li>
-<li>Limit salt, processed foods, and sugary drinks</li>
-<li>Maintain a healthy weight and reduce stress where possible</li>
-<li>Continue prescribed anti-hypertensives unless your doctor changes them</li>
-<li>Seek urgent care for chest pain, severe headache, or sudden vision changes</li>
-</ul>
-HTML,
-                'status' => 'published',
-                'sort_order' => 2,
-            ],
-            [
-                'title' => 'Maternal Wellness Plan',
-                'slug' => 'maternal-wellness-plan',
-                'summary' => 'Support for pregnancy checkups, nutrition, and warning signs that need medical attention.',
-                'body' => <<<'HTML'
-<p>Designed for expectant mothers following AfyaMed clinician guidance.</p>
-<ul>
-<li>Attend all antenatal appointments on schedule</li>
-<li>Take prenatal vitamins as prescribed</li>
-<li>Stay hydrated and eat iron-rich, balanced meals</li>
-<li>Rest when needed and avoid heavy lifting</li>
-<li>Contact your doctor for bleeding, severe swelling, reduced baby movement, or fever</li>
-</ul>
-HTML,
-                'status' => 'published',
-                'sort_order' => 3,
+                'summary' => 'Practical plan for controlling high blood pressure at home and knowing when to seek care.',
+                'body' => '<p>Focus on salt reduction, regular BP checks, and consistent medication use.</p>',
+                'sort_order' => 11,
             ],
             [
                 'title' => 'Post-Consultation Recovery',
                 'slug' => 'post-consultation-recovery',
-                'summary' => 'Simple after-visit steps so patients know what to do after a telehealth or clinic consultation.',
-                'body' => <<<'HTML'
-<p>Use this plan for the first 7 days after a consultation.</p>
-<ol>
-<li>Follow the doctor’s advice and complete any prescribed medicines</li>
-<li>Upload reports or prescriptions in the AfyaMed app if requested</li>
-<li>Track symptoms daily and note improvements or new concerns</li>
-<li>Book pharmacy delivery or lab tests from the app when ordered</li>
-<li>Request a follow-up if symptoms worsen or do not improve in the agreed timeframe</li>
-</ol>
-HTML,
-                'status' => 'published',
-                'sort_order' => 4,
-            ],
-            [
-                'title' => 'Child Fever Home Care',
-                'slug' => 'child-fever-home-care',
-                'summary' => 'Home-care checklist for mild childhood fever, with clear red-flag symptoms for parents.',
-                'body' => <<<'HTML'
-<p>For mild fever in children when a clinician has already advised home care.</p>
-<ul>
-<li>Offer fluids frequently and light meals</li>
-<li>Dress the child in light clothing and keep the room comfortable</li>
-<li>Use fever medicine only as prescribed for age and weight</li>
-<li>Monitor temperature every 4–6 hours</li>
-<li>Seek urgent care for difficulty breathing, rash, unusual sleepiness, or fever lasting more than 3 days</li>
-</ul>
-HTML,
-                'status' => 'published',
-                'sort_order' => 5,
-            ],
-            [
-                'title' => 'General Wellness Basics',
-                'slug' => 'general-wellness-basics',
-                'summary' => 'Starter lifestyle plan for sleep, hydration, activity, and preventive checkups.',
-                'body' => <<<'HTML'
-<p>A light wellness baseline for patients who want healthier daily habits.</p>
-<ul>
-<li>Sleep 7–8 hours most nights</li>
-<li>Drink water regularly through the day</li>
-<li>Move your body for at least 150 minutes each week</li>
-<li>Schedule annual health checks and vaccinations as recommended</li>
-<li>Use AfyaMed to book doctors, labs, and pharmacy support when needed</li>
-</ul>
-HTML,
-                'status' => 'draft',
-                'sort_order' => 6,
+                'summary' => 'After-visit steps so patients know what to do after a telehealth or clinic consultation.',
+                'body' => '<p>Follow advice, track symptoms for 7 days, and book follow-up if needed.</p>',
+                'sort_order' => 12,
             ],
         ];
 
-        foreach ($plans as $plan) {
+        foreach ($clinical as $plan) {
             CarePlan::query()->updateOrCreate(
                 ['slug' => $plan['slug']],
                 [
                     ...$plan,
+                    'category' => 'clinical',
+                    'tagline' => null,
+                    'benefits' => [],
+                    'member_events' => [],
+                    'status' => 'published',
                     'created_by' => $adminId,
                 ],
             );

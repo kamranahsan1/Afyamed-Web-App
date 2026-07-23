@@ -18,10 +18,15 @@ class CarePlansTable
             ->columns([
                 TextColumn::make('title')
                     ->searchable()
-                    ->sortable(),
-                TextColumn::make('slug')
-                    ->searchable()
-                    ->toggleable(),
+                    ->sortable()
+                    ->wrap(),
+                TextColumn::make('category')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'membership' => 'info',
+                        'wellness' => 'success',
+                        default => 'gray',
+                    }),
                 TextColumn::make('status')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
@@ -29,12 +34,18 @@ class CarePlansTable
                         'archived' => 'gray',
                         default => 'warning',
                     }),
+                TextColumn::make('benefits')
+                    ->label('Benefits')
+                    ->formatStateUsing(fn ($state): string => is_array($state) ? (string) count($state) : '0'),
+                TextColumn::make('member_events')
+                    ->label('Events')
+                    ->formatStateUsing(fn ($state): string => is_array($state) ? (string) count($state) : '0'),
                 TextColumn::make('sort_order')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('creator.name')
                     ->label('Created by')
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
@@ -46,6 +57,12 @@ class CarePlansTable
                         'draft' => 'Draft',
                         'published' => 'Published',
                         'archived' => 'Archived',
+                    ]),
+                SelectFilter::make('category')
+                    ->options([
+                        'membership' => 'Membership',
+                        'clinical' => 'Clinical',
+                        'wellness' => 'Wellness',
                     ]),
             ])
             ->recordActions([
