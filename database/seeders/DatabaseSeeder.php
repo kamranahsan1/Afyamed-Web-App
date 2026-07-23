@@ -49,5 +49,7 @@ class DatabaseSeeder extends Seeder
         );
 
         $admin->roles()->syncWithoutDetaching([$superAdmin->id]);
+
+        $this->call(CarePlanSeeder::class);
     }
 }
