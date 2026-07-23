@@ -13,24 +13,30 @@ final class FirebaseAuthService
 
     public function credentialsPath(): ?string
     {
-        $path = config('firebase.credentials');
-        if (! is_string($path) || $path === '') {
-            return null;
+        $candidates = array_filter([
+            config('firebase.credentials'),
+            storage_path('app/firebase/service-account.json'),
+        ], fn ($path): bool => is_string($path) && $path !== '');
+
+        foreach ($candidates as $path) {
+            if (! str_starts_with($path, DIRECTORY_SEPARATOR)
+                && ! preg_match('/^[A-Za-z]:[\\\\\\/]/', $path)) {
+                $path = base_path($path);
+            }
+
+            $path = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
+
+            if (is_file($path)) {
+                return $path;
+            }
         }
 
-        if (! str_starts_with($path, DIRECTORY_SEPARATOR)
-            && ! preg_match('/^[A-Za-z]:[\\\\\\/]/', $path)) {
-            $path = base_path($path);
-        }
-
-        return $path;
+        return null;
     }
 
     public function configured(): bool
     {
-        $path = $this->credentialsPath();
-
-        return $path !== null && is_file($path);
+        return $this->credentialsPath() !== null;
     }
 
     public function auth(): FirebaseAuth

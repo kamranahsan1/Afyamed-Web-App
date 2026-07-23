@@ -15,7 +15,9 @@ class AdminStatsOverview extends StatsOverviewWidget
 {
     protected function getStats(): array
     {
-        $firebaseReady = app(FirebaseAuthService::class)->configured();
+        $firebase = app(FirebaseAuthService::class);
+        $firebaseReady = $firebase->configured();
+        $projectId = (string) config('firebase.project_id', '');
 
         return [
             Stat::make('Admins', WebAdmin::query()->count())
@@ -34,7 +36,9 @@ class AdminStatsOverview extends StatsOverviewWidget
                 ->description('Recorded actions')
                 ->icon('heroicon-o-clipboard-document-list'),
             Stat::make('Firebase Admin', $firebaseReady ? 'Configured' : 'Not configured')
-                ->description($firebaseReady ? 'Token verify ready' : 'Set service-account.json')
+                ->description($firebaseReady
+                    ? ($projectId !== '' ? "Project: {$projectId}" : 'Token verify ready')
+                    : 'Set storage/app/firebase/service-account.json')
                 ->color($firebaseReady ? 'success' : 'warning')
                 ->icon('heroicon-o-fire'),
         ];
