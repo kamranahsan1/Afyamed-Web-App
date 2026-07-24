@@ -55,6 +55,7 @@ Route::post('/refresh', function (Request $request) {
     }
 
     try {
+        // Delay execution to ensure that the repository is fully updated before deployment
         sleep(3);
 
         set_time_limit(300);
