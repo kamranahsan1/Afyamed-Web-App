@@ -8,6 +8,7 @@ Route::get('/', function () {
 });
 
 Route::post('/refresh', function (Request $request) {
+    // This route is intended to be used as a GitHub webhook for automatic deployment.
 
     $secret = config('services.github.webhook_secret');
 
