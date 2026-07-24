@@ -7,9 +7,9 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "filament/filament": "4.0",
-        "google/cloud-firestore": "1.47",
-        "kreait/firebase-php": "7.16",
+        "filament/filament": "^4.11.5",
+        "google/cloud-firestore": "^1.47",
+        "kreait/firebase-php": "^7.24.1",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1"
     },
