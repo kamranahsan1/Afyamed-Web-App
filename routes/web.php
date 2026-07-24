@@ -1,5 +1,6 @@
 <?php
-
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -8,23 +9,60 @@ Route::get('/', function () {
 
 Route::post('/refresh', function (Request $request) {
 
-    $secret = env('DEPLOY_WEBHOOK_SECRET');
+    $secret = config('services.github.webhook_secret');
 
-    if (!$secret || $request->header('X-Deploy-Secret') !== $secret) {
+    if (!$secret) {
         return response()->json([
             'success' => false,
-            'message' => 'Unauthorized',
+            'message' => 'Webhook secret is not configured.',
+        ], 500);
+    }
+
+    // Verify request is genuinely from GitHub
+    $signature = $request->header('X-Hub-Signature-256');
+
+    $expectedSignature = 'sha256=' . hash_hmac(
+        'sha256',
+        $request->getContent(),
+        $secret
+    );
+
+    if (
+        !$signature ||
+        !hash_equals($expectedSignature, $signature)
+    ) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Invalid GitHub signature.',
         ], 401);
     }
 
-    sleep(5);
+    // Only process GitHub push events
+    if ($request->header('X-GitHub-Event') !== 'push') {
+        return response()->json([
+            'success' => true,
+            'message' => 'Event ignored.',
+        ]);
+    }
+
+    // Only run deployment for main branch
+    if ($request->input('ref') !== 'refs/heads/main') {
+        return response()->json([
+            'success' => true,
+            'message' => 'Branch ignored.',
+        ]);
+    }
 
     try {
+        sleep(3);
+
+        set_time_limit(300);
+
         Artisan::call('app:deploy');
 
         return response()->json([
             'success' => true,
-            'message' => 'Deployment completed successfully.',
+            'message' => 'Deployment completed.',
             'output' => Artisan::output(),
         ]);
 
