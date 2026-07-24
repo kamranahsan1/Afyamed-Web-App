@@ -57,9 +57,9 @@ Route::post('/refresh', function (Request $request) {
     try {
         // Delay execution to ensure that the repository is fully updated before deployment
         sleep(3);
-
+        // Increase the maximum execution time to 5 minutes for the deployment process
         set_time_limit(300);
-
+        // Call the deployment command
         Artisan::call('app:deploy');
 
         return response()->json([
