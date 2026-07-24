@@ -65,6 +65,7 @@ class CarePlansTable
                         'wellness' => 'Wellness',
                     ]),
             ])
+            ->defaultGroup('category')
             ->recordActions([
                 EditAction::make(),
             ])

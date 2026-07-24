@@ -32,22 +32,30 @@ class CarePlanForm
                     ->maxLength(255),
                 Select::make('category')
                     ->options([
-                        'membership' => 'Membership',
-                        'clinical' => 'Clinical',
-                        'wellness' => 'Wellness',
+                        'membership' => 'Membership (subscription / paid plan)',
+                        'clinical' => 'Clinical (condition / doctor care plan)',
+                        'wellness' => 'Wellness (lifestyle / prevention)',
                     ])
+                    ->helperText('Membership = what paying members unlock. Clinical = illness/condition plans. Wellness = healthy lifestyle plans.')
                     ->required()
                     ->default('clinical'),
                 Textarea::make('summary')
+                    ->label('Short summary (member-friendly)')
+                    ->helperText('1–2 lines shown in lists and cards.')
                     ->rows(2)
                     ->columnSpanFull(),
                 TextInput::make('tagline')
+                    ->label('Tagline')
+                    ->helperText('Marketing line under the title.')
                     ->maxLength(255)
                     ->columnSpanFull(),
                 RichEditor::make('body')
+                    ->label('Full description')
+                    ->helperText('Longer explanation for members.')
                     ->columnSpanFull(),
                 Repeater::make('benefits')
-                    ->label('Member benefits')
+                    ->label('Benefits (what the member gets)')
+                    ->helperText('Show these as ✔ points in the app. Example: Free first consult, Family dashboard.')
                     ->schema([
                         TextInput::make('title')
                             ->required()
@@ -61,11 +69,12 @@ class CarePlanForm
                     ->collapsible()
                     ->columnSpanFull(),
                 Repeater::make('member_events')
-                    ->label('Membership events / perks')
-                    ->helperText('Rules applied to members, e.g. 1 complimentary consultation per month.')
+                    ->label('Events / automatic rules')
+                    ->helperText('Rules the system can apply later. Example: 1 free consult every month, 20% doctor discount. Clinical/Wellness can leave this empty.')
                     ->schema([
                         TextInput::make('code')
-                            ->helperText('Machine key, e.g. monthly_complimentary_consult')
+                            ->label('Code (system key)')
+                            ->helperText('Example: monthly_complimentary_consult')
                             ->required()
                             ->maxLength(100),
                         TextInput::make('title')
@@ -76,21 +85,21 @@ class CarePlanForm
                             ->columnSpanFull(),
                         Select::make('type')
                             ->options([
-                                'complimentary' => 'Complimentary / free',
-                                'discount' => 'Discount',
+                                'complimentary' => 'Free / complimentary',
+                                'discount' => 'Discount %',
                                 'priority' => 'Priority access',
-                                'bundle' => 'Bundle / delivery',
+                                'bundle' => 'Monthly bundle / delivery',
                                 'feature' => 'Feature unlock',
                             ])
                             ->required()
                             ->default('feature'),
                         TextInput::make('frequency')
-                            ->helperText('e.g. monthly, once, ongoing')
+                            ->helperText('once / monthly / ongoing')
                             ->maxLength(50),
                         TextInput::make('quantity')
                             ->numeric()
                             ->minValue(0)
-                            ->helperText('e.g. 1 free consult per month'),
+                            ->helperText('How many times (e.g. 1 per month)'),
                         TextInput::make('discount_percent')
                             ->numeric()
                             ->minValue(0)
