@@ -27,6 +27,11 @@ final class FirebaseFactory
             $factory = $factory->withProjectId($projectId);
         }
 
+        // Hostinger / shared hosts often lack ext-grpc. REST transport works over HTTPS.
+        $factory = $factory->withFirestoreClientConfig([
+            'transport' => 'rest',
+        ]);
+
         return $this->factory = $factory;
     }
 }
