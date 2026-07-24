@@ -23,3 +23,8 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Hostinger / local deploy bundles (never commit)
+.deploy-upload-*
+.deploy-upload-20260723/
+afyamed-production-config.zip
