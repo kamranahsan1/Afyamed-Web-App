@@ -83,6 +83,9 @@
         "allow-plugins": {
             "pestphp/pest-plugin": true,
             "php-http/discovery": true
+        },
+        "platform": {
+            "ext-grpc": "1.57.0"
         }
     },
     "minimum-stability": "stable",
