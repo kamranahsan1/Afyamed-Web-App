@@ -10,6 +10,7 @@ use Illuminate\Validation\ValidationException;
 class MedicalFileService
 {
     public const CATEGORIES = [
+        'avatars',
         'prescriptions',
         'insurance',
         'medical_reports',

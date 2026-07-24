@@ -33,6 +33,7 @@ class HealthController extends Controller
                 'medical_disk' => Storage::disk('medical')->exists('.gitkeep')
                     || is_dir(storage_path('app/private/prescriptions')),
                 'firebase_credentials' => app(\App\Services\Firebase\FirebaseAuthService::class)->configured(),
+                'firestore' => app(\App\Services\Firebase\FirestoreService::class)->configured(),
             ],
         ]);
     }
